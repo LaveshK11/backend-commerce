@@ -1,0 +1,312 @@
+.container_header {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+}
+
+nav ul li {
+  margin-right: 30px;
+}
+
+nav ul li a {
+  color: #555;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eee;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.search-box input[type="text"] {
+  width: 500px;
+  height: 40px;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.search-box button {
+  background-color: #ff9900;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  /* background-image: url('amazon-banner.jpg'); */
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  text-align: center;
+}
+
+main section {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+main section h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+main section p {
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+
+main section a {
+  background-color: #ff9900;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+main section a:hover {
+  background-color: #ff6600;
+}
+
+footer {
+  background-color: #f2f2f2;
+  padding: 20px 40px;
+  text-align: center;
+}
+
+footer p {
+  font-size: 14px;
+  color: #999;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.loader-circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid #000;
+  border-color: #000 transparent #000 transparent;
+  animation: loader-animation 0.6s linear infinite;
+}
+
+@keyframes loader-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.container_register {
+  width: 400px;
+  margin: auto;
+  text-align: center;
+}
+
+h1 {
+  font-size: 40px;
+  margin-bottom: 40px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#btn_submit {
+  background-color: #ff9900;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+a {
+  color: #0066c0;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.otp-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.otp-heading {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-label {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.otp-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.otp-button {
+  padding: 10px;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  width: 100%;
+  max-width: 400px;
+}
+
+.otp-button:hover {
+  background-color: #0063c9;
+}
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f3f3f3;
+}
+
+.login-container {
+	margin: 100px auto;
+	width: 400px;
+	background-color: #ffffff;
+	padding: 30px;
+	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+h1 {
+	font-size: 28px;
+	color: #232f3e;
+	margin-bottom: 30px;
+}
+
+label {
+	display: block;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+	display: block;
+	width: 100%;
+	height: 40px;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 20px;
+}
+
+button[type="submit"] {
+	background-color: #ff9900;
+	color: #ffffff;
+	border: none;
+	padding: 10px 20px;
+	font-size: 16px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+button[type="submit"]:hover {
+	background-color: #ffbf80;
+}
+
+.remember-forgot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 20px;
+	font-size: 14px;
+}
+
+.remember-forgot input[type="checkbox"] {
+	margin-right: 5px;
+}
+
+.remember-forgot a {
+	color: #0066c0;
+	text-decoration: none;
+}
+
+.remember-forgot a:hover {
+	text-decoration: underline;
+}
