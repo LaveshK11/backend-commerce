@@ -9,7 +9,7 @@ async function connect() {
         mongoose.connect(URI, function(err) {
             if (err) throw err;
             console.log("Database created!");
-            console.logo("Database connected ")
+            console.log("Database connected ")
 
         });
     } catch (error) {
