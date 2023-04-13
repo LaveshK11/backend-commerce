@@ -1,7 +1,7 @@
-const sentEmail = require("../helpers/emailSender");
-const validator = require("../helpers/validation");
-const User = require("../models/user");
-const Otp = require("../models/otp");
+const sentEmail = require("../../helpers/emailSender");
+const validator = require("../../helpers/validation");
+const User = require("../../models/user");
+const Otp = require("../../models/otp");
 
 exports.registerUser = async (req, res) => {
   let result = await validator.checkValidation(req.body);
@@ -15,7 +15,7 @@ exports.registerUser = async (req, res) => {
             message: "User Already exsist",
           });
         } else {
-          sentEmail(req.body)
+          sentEmail(req.body);
           res.status(200).send({
             success: true,
             data: result,
@@ -49,18 +49,22 @@ exports.loginUser = async (req, res) => {
           },
         ],
         function (err, data) {
-          if (data.length) {
-            res.status(200).send({
-              success: true,
-              data: data,
-              message: "User Found",
-            });
-          } else {
-            res.status(200).send({
-              success: false,
-              data: data,
-              message: "Invalid credentials",
-            });
+          if (err) console.log(err);
+          else {
+            console.log(data.length);
+            if (data.length > 0) {
+              res.status(200).send({
+                success: true,
+                message: "User Login Successfully",
+              });
+            } else {
+              console.log(data);
+              res.status(200).send({
+                success: false,
+                data: data,
+                message: "Invalid Login id or password",
+              });
+            }
           }
         }
       );

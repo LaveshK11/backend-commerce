@@ -17,7 +17,8 @@ const useSchema = new Schema({
   verified:{
     type : Boolean,
     default : true
-  }
+  },
+  versionKey: false
 });
 const registerModel = mongoose.model("user", useSchema);
 
