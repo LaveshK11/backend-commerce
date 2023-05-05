@@ -1,5 +1,11 @@
 const User = require("../../models/user");
 
+/**
+ * @desc Getting user details using jwt tokens 
+ * @route  POST /api/userDetails
+ * @param {*} req 
+ * @access Private
+ */
 exports.getUserDetails = async (req, res) => {
   User.find(
     { email: "laveshkhairajani01@gmail.com" },

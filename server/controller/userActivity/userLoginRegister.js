@@ -1,14 +1,25 @@
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const sentEmail = require("../../helpers/emailSender");
 const validator = require("../../helpers/validation");
 const User = require("../../models/user");
 const Otp = require("../../models/otp");
+const dotenv = require("dotenv");
+dotenv.config();
 
+/**
+ * @desc   Register new user
+ * @route   POST /api/register
+ * @access  PUBLIC
+ * @param   {email , Username , password }
+ * */
 exports.registerUser = async (req, res) => {
   let result = await validator.checkValidation(req.body);
   try {
     if (result == 0) {
-      User.find({ email: req.body.email }, async function (err, result) {
-        if (result.length) {
+      User.findOne({ email: req.body.email }, async function (err, result) {
+        if (result) {
           res.status(200).send({
             success: true,
             exsist: 1,
@@ -18,7 +29,6 @@ exports.registerUser = async (req, res) => {
           sentEmail(req.body);
           res.status(200).send({
             success: true,
-            data: result,
             message: "otp has been sent on you email",
           });
         }
@@ -34,40 +44,41 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+/**
+ * @param {email , password} req
+ * @desc    login user
+ * @route   POST /api/login
+ * @access  PUBLIC
+ */
 exports.loginUser = async (req, res) => {
   let result = await validator.checkValidation(req.body);
+  const { email, password } = req.body;
   try {
     if (result == 0) {
-      User.aggregate(
-        [
-          {
-            $match: {
-              verified: true,
-              email: `${req.body.email}`,
-              password: `${req.body.password}`,
-            },
-          },
-        ],
-        function (err, data) {
-          if (err) console.log(err);
-          else {
-            console.log(data.length);
-            if (data.length > 0) {
+      const user = User.findOne({ email }, async function (err, data) {
+        if (err) console.log(err);
+        else {
+          if (data) {
+            const passwordMatch = await bcrypt.compare(password, data.password);
+            if (passwordMatch) {
               res.status(200).send({
                 success: true,
                 message: "User Login Successfully",
               });
             } else {
-              console.log(data);
-              res.status(200).send({
+              res.status(400).send({
                 success: false,
-                data: data,
                 message: "Invalid Login id or password",
               });
             }
+          } else {
+            res.status(400).send({
+              success: false,
+              message: "User not found",
+            });
           }
         }
-      );
+      });
     } else {
       res.status(200).send({
         success: false,
@@ -79,12 +90,18 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+/**
+ * @desc    verify otp and registering user
+ * @route   POST /api/verifyOtp
+ * @access  PUBLIC
+ * @param   {email , Otp}
+ */
 exports.verifyOtp = async (req, res) => {
   let result = await validator.checkValidation(req.body);
   if (result == 0) {
-    Otp.find(
+    Otp.findOne(
       { otp: req.body.otp, email: req.body.userData.email },
-      function (err, data) {
+      async function (err, data) {
         if (err) {
           res.status(200).send({
             success: false,
@@ -92,10 +109,16 @@ exports.verifyOtp = async (req, res) => {
             message: "Please fill data",
           });
         } else {
-          if (data.length > 0) {
+          if (data) {
+            let salt = await bcrypt.genSalt(10);
+            req.body.userData.password = await bcrypt.hash(
+              req.body.userData.password,
+              salt
+            );
             let user = User(req.body.userData);
             user.save(function (err, result) {
               if (err) {
+                console.log(err);
                 if (err.name === "ValidationError") {
                   res.status(200).send({
                     success: false,
@@ -105,15 +128,23 @@ exports.verifyOtp = async (req, res) => {
                   res.status(200).send({
                     success: true,
                     exsist: 1,
-                    message: "User Already registerd",
+                    message: "User Already registerd", 
                   });
                 }
               } else {
-                res.status(200).send({
-                  success: true,
-                  data: result,
-                  message: "User Registered Successfully",
-                });
+                const token = jwt.sign(
+                  { user: result.email },
+                  process.env.JWT_SECRET
+                );
+                res
+                  .cookie("token", token, {
+                    httpOnly: true,
+                  })
+                  .status(200)
+                  .send({
+                    success: true,
+                    message: "User Registered Successfully",
+                  });
               }
             });
           } else {
@@ -132,3 +163,11 @@ exports.verifyOtp = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc reseting password of the user
+ * @route   POST /api/forgotPassword
+ * @param {email , newPass} req
+ * @access PUBLIC
+ */
+exports.forgotPassword = async (req, res) => {};
