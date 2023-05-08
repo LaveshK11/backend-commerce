@@ -6,6 +6,10 @@ const validator = require("../../helpers/validation");
 const User = require("../../models/user");
 const Otp = require("../../models/otp");
 const dotenv = require("dotenv");
+const {
+  generateJwtToke,
+  generateJwtToken,
+} = require("../../helpers/additionalFunction");
 dotenv.config();
 
 /**
@@ -56,17 +60,24 @@ exports.loginUser = async (req, res) => {
   try {
     if (result == 0) {
       const user = User.findOne({ email }, async function (err, data) {
-        if (err) console.log(err);
-        else {
+        if (err) {
+          console.log(err);
+        } else {
           if (data) {
             const passwordMatch = await bcrypt.compare(password, data.password);
             if (passwordMatch) {
-              res.status(200).send({
-                success: true,
-                message: "User Login Successfully",
-              });
+              const token = await generateJwtToken(result.email);
+              res
+                .cookie("JWT", token, {
+                  httpOnly: true,
+                })
+                .status(200)
+                .send({
+                  success: true,
+                  message: "User Login Successfully",
+                });
             } else {
-              res.status(400).send({
+              res.status(206).send({
                 success: false,
                 message: "Invalid Login id or password",
               });
@@ -82,7 +93,7 @@ exports.loginUser = async (req, res) => {
     } else {
       res.status(200).send({
         success: false,
-        success : false,
+        success: false,
         message: "Please fill data",
       });
     }
@@ -111,13 +122,15 @@ exports.verifyOtp = async (req, res) => {
           });
         } else {
           if (data) {
+            const token = await generateJwtToken(result.email);
             let salt = await bcrypt.genSalt(10);
             req.body.userData.password = await bcrypt.hash(
               req.body.userData.password,
               salt
             );
+            req.body.userData.token = token;
             let user = User(req.body.userData);
-            user.save(function (err, result) {
+            user.save(async function (err, result) {
               if (err) {
                 console.log(err);
                 if (err.name === "ValidationError") {
@@ -129,16 +142,12 @@ exports.verifyOtp = async (req, res) => {
                   res.status(200).send({
                     success: true,
                     exsist: 1,
-                    message: "User Already registerd", 
+                    message: "User Already registerd",
                   });
                 }
               } else {
-                const token = jwt.sign(
-                  { user: result.email },
-                  process.env.JWT_SECRET
-                );
                 res
-                  .cookie("token", token, {
+                  .cookie("JWT", token, {
                     httpOnly: true,
                   })
                   .status(200)
@@ -149,7 +158,7 @@ exports.verifyOtp = async (req, res) => {
               }
             });
           } else {
-            res.status(200).send({
+            res.status(206).send({
               success: false,
               message: "Invalid or expired Otp",
             });
@@ -171,4 +180,6 @@ exports.verifyOtp = async (req, res) => {
  * @param {email , newPass} req
  * @access PUBLIC
  */
-exports.forgotPassword = async (req, res) => {};
+exports.forgotPassword = async (req, res) => {
+  console.log("in")
+};

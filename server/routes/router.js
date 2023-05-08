@@ -7,7 +7,7 @@ const router = express.Router();
 const userActivity = require("../controller/userActivity/userLoginRegister");
 const userInfo = require("../controller/userActivity/getUserDetails");
 const cart = require("../controller/cart/shoppingCart");
-const registerModel = require("../models/user");
+const auth = require("../controller/middleware/authMiddleware");
 
 const app = express();
 app.use(router);
@@ -24,7 +24,7 @@ router.post("/api/userDetails", userInfo.getUserDetails);
 router.post("/api/register", userActivity.registerUser);
 router.post("/api/login", userActivity.loginUser);
 router.post("/api/verifyOtp", userActivity.verifyOtp);
-router.post("/api.forgotPassword", userActivity.forgotPassword);
+router.post("/api/forgotPassword", auth, userActivity.forgotPassword);
 //------------------------------END--------------------------
 
 // api's realted to shopping cart

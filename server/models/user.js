@@ -18,6 +18,10 @@ const useSchema = new Schema({
     type : Boolean,
     default : true
   },
+  token:{
+    type: String,
+    required :true,
+  }, 
   versionKey: false
 });
 const registerModel = mongoose.model("user", useSchema);
