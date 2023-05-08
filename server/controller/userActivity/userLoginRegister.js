@@ -82,6 +82,7 @@ exports.loginUser = async (req, res) => {
     } else {
       res.status(200).send({
         success: false,
+        success : false,
         message: "Please fill data",
       });
     }
