@@ -19,7 +19,7 @@ exports.searchProduct = async (req, res) => {
           .limit(parseInt(perPage));
         res
           .status(200)
-          .send({ product: data, total: data.length, skip: 0, limit: 0 });
+          .send({ product: data, total: data.length, skip: 0});
       }
     }
   );
