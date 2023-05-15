@@ -8,13 +8,12 @@ const auth = async (req, res, next) => {
     const token = req.cookies.JWT;
     const verifyUser = jwt.verify(token, process.env.JWT_SECRET);
     console.log(verifyUser);
-    let user = await User.findOne({ email: verifyUser.emil });
-    console.log(user);
-    // next();
+    let user = await User.findOne({ email: verifyUser.user });
+    next();
   } catch (error) {
     res.status(401).send({
       success: false,
-      message: "imporper user data",
+      message: "Invalid",
     });
   }
 };

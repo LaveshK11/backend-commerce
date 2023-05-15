@@ -6,7 +6,7 @@ const productSchema = new Schema({
     type: Array,
     required: true,
   },
-  stockAvailable: {
+  stock: {
     type: Number,
     required: true,
   },
@@ -14,11 +14,11 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  offeringPrice: {
+  price: {
     type: Number,
     required: true,
   },
-  productName: {
+  title: {
     type: String,
     required: true,
   },
@@ -32,6 +32,22 @@ const productSchema = new Schema({
   },
   productId: {
     type: String,
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  brand: {
+    type: String,
+    required: true,
+  },
+  images: {
+    type: Array,
+    required: true,
+  },
+  discountPercentage: {
+    type: Number,
     required: true,
   },
 });

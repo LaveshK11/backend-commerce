@@ -1,15 +1,12 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const sentEmail = require("../../helpers/emailSender");
+const { Otpemail, passForgotMail } = require("../../helpers/emailSender");
 const validator = require("../../helpers/validation");
 const User = require("../../models/user");
 const Otp = require("../../models/otp");
 const dotenv = require("dotenv");
-const {
-  generateJwtToke,
-  generateJwtToken,
-} = require("../../helpers/additionalFunction");
+const { generateJwtToken } = require("../../helpers/additionalFunction");
 dotenv.config();
 
 /**
@@ -30,7 +27,7 @@ exports.registerUser = async (req, res) => {
             message: "User Already exsist",
           });
         } else {
-          sentEmail(req.body);
+          Otpemail(req.body);
           res.status(200).send({
             success: true,
             message: "otp has been sent on you email",
@@ -66,7 +63,7 @@ exports.loginUser = async (req, res) => {
           if (data) {
             const passwordMatch = await bcrypt.compare(password, data.password);
             if (passwordMatch) {
-              const token = await generateJwtToken(result.email);
+              const token = await generateJwtToken(data.email);
               res
                 .cookie("JWT", token, {
                   httpOnly: true,
@@ -83,7 +80,7 @@ exports.loginUser = async (req, res) => {
               });
             }
           } else {
-            res.status(400).send({
+            res.status(200).send({
               success: false,
               message: "User not found",
             });
@@ -122,7 +119,7 @@ exports.verifyOtp = async (req, res) => {
           });
         } else {
           if (data) {
-            const token = await generateJwtToken(result.email);
+            const token = await generateJwtToken(data.email);
             let salt = await bcrypt.genSalt(10);
             req.body.userData.password = await bcrypt.hash(
               req.body.userData.password,
@@ -176,10 +173,70 @@ exports.verifyOtp = async (req, res) => {
 
 /**
  * @desc reseting password of the user
- * @route   POST /api/forgotPassword
- * @param {email , newPass} req
+ * @route   POST /api/forgotPassord
+ * @param {email} req
  * @access PUBLIC
  */
-exports.forgotPassword = async (req, res) => {
-  console.log("in")
+exports.SendforgotPasswordMail = async (req, res) => {
+  User.findOne({ email: req.body.email }, async function (err, data) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (data) {
+        let payload = {
+          email: data.email,
+        };
+        let token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "33m",
+        });
+
+        const resetLink = `http://localhost:3000/api/reset-password/${token}`;
+        let emailSent = passForgotMail(req.body, resetLink);
+        if (emailSent) {
+          res.status(200).send({
+            success: true,
+            message: "Password reset link has been sent on you email",
+          });
+        } else {
+          res.status(200).send({
+            success: true,
+            message: "Email not found ",
+          });
+        }
+      }
+    }
+  });
+};
+
+/**
+ * @desc reseting password of the user
+ * @route   POST /api/forgotPassord
+ * @param {email} req
+ * @access PUBLIC
+ */
+exports.resetPassword = async (req, res) => {
+  const { token } = req.params;
+  jwt.verify(token, process.env.JWT_SECRET, async function (err, decode) {
+    if (err) {
+      res.status(403).send({ success: false, message: "Token Expired" });
+    } else {
+      let salt = await bcrypt.genSalt(10);
+      let newPassword = await bcrypt.hash(req.body.confirmPass, salt);
+      User.findOneAndUpdate(
+        { email: decode.email },
+        { $set: { password: newPassword } },
+        function (err, data) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(data);
+            res.status(200).send({
+              success: true,
+              message: "Password changed successfully",
+            });
+          }
+        }
+      );
+    }
+  });
 };

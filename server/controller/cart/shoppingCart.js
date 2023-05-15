@@ -1,11 +1,18 @@
 const productModel = require("../../models/porducts");
 const validator = require("../../helpers/validation");
 const addToCart = require("../../models/addToCart");
+
+/**
+ * @desc    Moving porduct to cart
+ * @route   POST /api/move-to-cart
+ * @access  Private
+ * @param   {productId , userEmail}
+ */
 exports.moveToCart = async (req, res) => {
   let result = await validator.checkValidation(req.body);
   try {
     if (result == 0) {
-      let productAlreadyAvail = addToCart.find(
+      addToCart.find(
         {
           productId: req.body.productId,
           userEmail: req.body.email,
