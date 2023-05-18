@@ -17,9 +17,7 @@ exports.searchProduct = async (req, res) => {
         find({}, { _id: 0 })
           .skip((page - 1) * perPage)
           .limit(parseInt(perPage));
-        res
-          .status(200)
-          .send({ product: data, total: data.length, skip: 0 });
+        res.status(200).send({ product: data, total: data.length, skip: 0 });
       }
     }
   );
@@ -42,4 +40,35 @@ exports.searchCategory = async (req, res) => {
         .send({ product: data, total: data.length, skip: 0, limit: 0 });
     }
   });
+};
+
+/**
+ * @desc   Searching category
+ * @route  GET /api/products/category/serach?param
+ * @param  {category}
+ * @access PUBLIC
+ */
+exports.getallcategory = async (req, res) => {
+  productModel.aggregate(
+    [
+      {
+        $project: {
+          category: 1,
+          _id: 0,
+        },
+      },
+    ],
+    function (err, data) {
+      if (err) console.log(err);
+      else {
+        let arr = [];
+        data.forEach((element) => {
+          arr.push(element.category);
+        });
+        res
+          .status(200)
+          .send({ product: arr, total: data.length, skip: 0, limit: 0 });
+      }
+    }
+  );
 };

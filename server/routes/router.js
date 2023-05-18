@@ -39,5 +39,5 @@ router.post("/api/addProduct", addProucts);
 router.post("/api/move-to-cart", auth, cart.moveToCart);
 router.get("/api/products/search", porductOperation.searchProduct);
 router.get("/api/products/category/serach", porductOperation.searchCategory);
-
+router.get("/api/products/category", porductOperation.getallcategory);
 module.exports = router;
