@@ -19,7 +19,7 @@ exports.getUserDetails = async (req, res) => {
       else {
         res.status(200).send({
           success: true,
-          data,
+          data: data
         });
       }
     }
